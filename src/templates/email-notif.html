@@ -1,0 +1,76 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <style>
+      * {
+  margin: 20px;
+  padding: 0;
+  color: #3b3b3b;
+}
+
+body {
+  height: 100vh;
+}
+
+body > div {
+  width: 70%;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  border-radius: 6px;
+  padding: 15px;
+  overflow: hidden;
+  background: pink;
+}
+
+div > h4 {
+  color: #3b3b3b;
+}
+
+div > div {
+  color: #3b3b3b;
+}
+    </style>
+  <body>
+    <h5>Cara/o {{name}}, as seguintes aulas estão agora disponíveis para marcação:</h5>
+    {{#each matchedClasses}}
+    <div>
+      <h4>{{this.club}}</h4>
+      {{#if this.classesDetails}} {{#each this.classesDetails}}
+      <div>{{this}}</div>
+      {{/each}} {{/if}}
+    </div>
+    {{/each}}
+  </body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en" >
+  <head>
+    <title></title>    
+  <body style="height: 100vh">
+    <h5 style="margin: 20px;
+    color: #3b3b3b;">Cara/o {{name}}, as seguintes aulas estão agora disponíveis para marcação:</h5>
+    {{#each matchedClasses}}
+    {{#if this.classesDetails}}
+    <div style="width: 70%;
+        position: relative;
+        box-shadow: 0 2px 8px #000000;
+        border-radius: 6px;        
+        border: 2px solid #da8fc7;
+        padding: 15px;
+        overflow: hidden;
+        background: #ffffff;
+        margin: 20px">
+     
+      <h4 style="margin: 20px;
+      color: #3b3b3b;">{{this.club}}</h4>
+      {{#each this.classesDetails}}
+      <div style="margin: 20px;
+      color: #3b3b3b;">{{this}}</div>
+      {{/each}} 
+    </div>
+    {{/if}}{{/each}}
+  </body>
+</html>
