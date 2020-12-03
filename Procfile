@@ -1,1 +1,1 @@
-web: node --inspect=9090 ./app.js 
+web: node --inspect=9090 ./src/app.js 
