@@ -20,11 +20,16 @@ const availableClasses = async (
   userId,
   userInfo = null,
   calledByWatcher = false
-) => {
-  const newDate = new Date();
-  const today = dateFormatter(newDate);
-  const tomorrow = dateFormatter(newDate.setDate(newDate.getDate() + 1));
-  console.log('new date', new Date(), today)
+  ) => {
+    let today = new Date()
+    today = today.toISOString().split('T')[0];
+    let tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    console.log(555, tomorrow)
+    tomorrow = tomorrow.toISOString().split('T')[0]
+    console.log(666, tomorrow)
+
+    console.log('new date', today, tomorrow)
 
   try {
     const user =
@@ -90,6 +95,7 @@ const availableClasses = async (
     }
 
     if (matchedClasses.length > 0 && calledByWatcher) {
+      console.log(77777)
       const notifiedClasses = await getNotifiedClasses(userId);
       const classesInfoToNotify = getClassesInfoForMessageSent(
         matchedClasses,
