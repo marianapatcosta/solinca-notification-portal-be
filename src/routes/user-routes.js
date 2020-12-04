@@ -7,10 +7,13 @@ const {
   getUserData,
   updateUserData,
   resetPassword,
-  restorePassword
+  restorePassword,
 } = require("../controllers/user-controller");
 
 const router = Router();
+
+// implemented to keep heroku dyno always awake
+router.get("/", (req, res, next) => res.send("Hello User!!"));
 
 router.post(
   "/signup",
@@ -19,7 +22,7 @@ router.post(
     check("email").normalizeEmail().isEmail(),
     check("solincaAuth").not().isEmpty(),
     check("password").isLength({ min: 8 }),
-    check('phoneNumber').optional().not().isEmpty()
+    check("phoneNumber").optional().not().isEmpty(),
   ],
   signup
 );
@@ -30,17 +33,31 @@ router.post(
   signin
 );
 
-router.post("/reset-password", [check("email").normalizeEmail().isEmail()], resetPassword);
-router.post("/restore-password", [check("resetPasswordToken").not().isEmpty(), check("password").isLength({ min: 8 })], restorePassword);
+router.post(
+  "/reset-password",
+  [check("email").normalizeEmail().isEmail()],
+  resetPassword
+);
+router.post(
+  "/restore-password",
+  [
+    check("resetPasswordToken").not().isEmpty(),
+    check("password").isLength({ min: 8 }),
+  ],
+  restorePassword
+);
 
 router.use(checkAuthorization);
-router.patch("/:id", [
-  check("email").optional().normalizeEmail().isEmail(),
-  check("solincaAuth").optional().not().isEmpty(),
-  check("password").optional().isLength({ min: 8 }),
-  check('phoneNumber').optional().not().isEmpty()
-], updateUserData);
+router.patch(
+  "/:id",
+  [
+    check("email").optional().normalizeEmail().isEmail(),
+    check("solincaAuth").optional().not().isEmpty(),
+    check("password").optional().isLength({ min: 8 }),
+    check("phoneNumber").optional().not().isEmpty(),
+  ],
+  updateUserData
+);
 router.get("/:id", getUserData);
-
 
 module.exports = router;

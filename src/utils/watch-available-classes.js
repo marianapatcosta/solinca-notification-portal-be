@@ -12,7 +12,7 @@ const watchAvailableClasses = async () => {
   setTimeout(() => {
     !!users.length && users.forEach(user => availableClasses(user.id, user, true));
     watchAvailableClasses();
-  }, 60000/* timeInterval */);
+  }, timeInterval);
 };
 
 const getUsers = async () => {
