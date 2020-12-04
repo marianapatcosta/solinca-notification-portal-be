@@ -3,7 +3,6 @@ const HttpError = require("../models/http-error");
 const NotifiedClass = require("../models/notified-class");
 const logger = require("./logger");
 const HttpStatusCode = require("./http-status-code");
-const dateFormatter = require("./date-formatter");
 const {
   AVAILABLE_CLASSES_URL,
   CLASSES_GET_ERROR,
@@ -20,16 +19,11 @@ const availableClasses = async (
   userId,
   userInfo = null,
   calledByWatcher = false
-  ) => {
-    let today = new Date()
-    today = today.toISOString().split('T')[0];
-    let tomorrow = new Date()
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    console.log(555, tomorrow)
-    tomorrow = tomorrow.toISOString().split('T')[0]
-    console.log(666, tomorrow)
-
-    console.log('new date', today, tomorrow)
+) => {
+  const today = (new Date()).toISOString().split("T")[0];
+  let tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow = tomorrow.toISOString().split("T")[0];
 
   try {
     const user =
@@ -95,7 +89,6 @@ const availableClasses = async (
     }
 
     if (matchedClasses.length > 0 && calledByWatcher) {
-      console.log(77777)
       const notifiedClasses = await getNotifiedClasses(userId);
       const classesInfoToNotify = getClassesInfoForMessageSent(
         matchedClasses,
@@ -175,19 +168,28 @@ const getClassesForNotificationRecord = (classes, notifiedClasses) => {
 
 const getNotifiedClasses = async (userId) => {
   let notifiedClasses;
-  console.log('date notified classes', new Date(new Date().getTime() - process.env.NOTIFIED_CLASSES_TIME_IN_MINUTES * 60000))
+  console.log(
+    "date notified classes",
+    new Date(
+      new Date().getTime() -
+        process.env.NOTIFIED_CLASSES_TIME_IN_MINUTES * 60000
+    )
+  );
   try {
     notifiedClasses = await NotifiedClass.find(
       {
         userId,
         notificationDate: {
           // subtracts process.env.NOTIFIED_CLASSES_TIME_IN_MINUTES to current time to get classes notified at less than 3h ago
-          $gt: new Date(new Date().getTime() - process.env.NOTIFIED_CLASSES_TIME_IN_MINUTES * 60000),
+          $gt: new Date(
+            new Date().getTime() -
+              process.env.NOTIFIED_CLASSES_TIME_IN_MINUTES * 60000
+          ),
         },
       },
       "classDescription"
     );
-   
+
     return notifiedClasses.map(({ classDescription }) => classDescription);
   } catch (error) {
     throw new HttpError(error, HttpStatusCode.INTERNAL_SERVER_ERROR);
