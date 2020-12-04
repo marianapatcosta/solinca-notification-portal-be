@@ -89,6 +89,7 @@ const availableClasses = async (
     }
 
     if (matchedClasses.length > 0 && calledByWatcher) {
+      console.log(7777)
       const notifiedClasses = await getNotifiedClasses(userId);
       const classesInfoToNotify = getClassesInfoForMessageSent(
         matchedClasses,
