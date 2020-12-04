@@ -54,6 +54,8 @@ const availableClasses = async (
       ],
     }));
 
+    console.log('urls', urlsPerClub)
+
     const availableClassesPerClub = [];
     for (const urls of urlsPerClub) {
       const [today, tomorrow] = await Promise.all(
@@ -63,6 +65,7 @@ const availableClasses = async (
               Authorization: `Bearer ${solincaAuthToken}`,
             },
           });
+          console.log('classes response', response.data)
           return response.data.slots;
         })
       );
@@ -72,11 +75,19 @@ const availableClasses = async (
         tomorrow,
       };
       availableClassesPerClub.push(availableClasses);
+      console.log('available classes', availableClassesPerClub)
     }
     const matchedClasses = findAvailableClassesToTrack(
       classesToTrack,
       availableClassesPerClub
     );
+
+    console.log('match classes', matchedClasses)
+    console.log('other classes', findOtherAvailableClasses(
+      classesToTrack,
+      availableClassesPerClub
+    ))
+
 
     if (!calledByWatcher) {
       return {
