@@ -1,1 +1,11 @@
 2020-12-03 23:09:23 error: Failed to get clubs - Error: Request failed with status code 401
+2020-12-04 10:02:44 error: Failed to fetch available classes - TypeError: Cannot destructure property `username` of 'undefined' or 'null'.
+2020-12-04 10:02:52 error: Failed to get clubs - TypeError: Cannot read property 'solincaAuthToken' of null
+2020-12-04 10:02:57 error: Failed to fetch available classes - TypeError: Cannot destructure property `username` of 'undefined' or 'null'.
+2020-12-04 10:03:09 error: Failed to fetch available classes - TypeError: Cannot destructure property `username` of 'undefined' or 'null'.
+2020-12-04 10:03:28 error: Failed to get clubs - TypeError: Cannot read property 'solincaAuthToken' of null
+2020-12-04 10:05:56 error: Failed to fetch available classes - Error: Request failed with status code 401
+2020-12-04 10:06:37 error: Failed to fetch available classes - Error: Request failed with status code 401
+2020-12-04 10:11:37 error: Failed to fetch available classes - Error: Request failed with status code 401
+2020-12-04 13:34:27 error: Failed to fetch available classes - Error: getaddrinfo ENOTFOUND marqueoseutreino.solinca.pt
+2020-12-04 13:40:00 error: Failed to fetch available classes - Error: Request failed with status code 401

@@ -24,6 +24,7 @@ const availableClasses = async (
   const newDate = new Date();
   const today = dateFormatter(newDate);
   const tomorrow = dateFormatter(newDate.setDate(newDate.getDate() + 1));
+  console.log('new date', new Date(), today)
 
   try {
     const user =
@@ -65,7 +66,6 @@ const availableClasses = async (
               Authorization: `Bearer ${solincaAuthToken}`,
             },
           });
-          console.log('classes response', response.data)
           return response.data.slots;
         })
       );
@@ -75,19 +75,11 @@ const availableClasses = async (
         tomorrow,
       };
       availableClassesPerClub.push(availableClasses);
-      console.log('available classes', availableClassesPerClub)
     }
     const matchedClasses = findAvailableClassesToTrack(
       classesToTrack,
       availableClassesPerClub
     );
-
-    console.log('match classes', matchedClasses)
-    console.log('other classes', findOtherAvailableClasses(
-      classesToTrack,
-      availableClassesPerClub
-    ))
-
 
     if (!calledByWatcher) {
       return {
@@ -179,6 +171,7 @@ const getClassesForNotificationRecord = (classes, notifiedClasses) => {
 
 const getNotifiedClasses = async (userId) => {
   let notifiedClasses;
+  console.log('date notified classes', new Date(new Date().getTime() - process.env.NOTIFIED_CLASSES_TIME_IN_MINUTES * 60000))
   try {
     notifiedClasses = await NotifiedClass.find(
       {
