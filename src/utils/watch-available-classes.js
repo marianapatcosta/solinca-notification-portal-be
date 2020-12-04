@@ -6,13 +6,13 @@ const HttpStatusCode = require("./http-status-code");
 
 const watchAvailableClasses = async () => {
   const timeInterval =
-    TIME_INTERVALS[Math.round(Math.random() * TIME_INTERVALS.length)];
+  TIME_INTERVALS[Math.round(Math.random() * TIME_INTERVALS.length)];
+  console.log('watcher', timeInterval)
   const users = await getUsers();
   setTimeout(() => {
-    console.log('watcher', timeInterval)
-    users.forEach(user => availableClasses(user.id, user, true));
+    !!users.length && users.forEach(user => availableClasses(user.id, user, true));
     watchAvailableClasses();
-  }, timeInterval);
+  }, 60000/* timeInterval */);
 };
 
 const getUsers = async () => {
