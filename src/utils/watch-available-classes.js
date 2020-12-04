@@ -9,6 +9,7 @@ const watchAvailableClasses = async () => {
     TIME_INTERVALS[Math.round(Math.random() * TIME_INTERVALS.length)];
   const users = await getUsers();
   setTimeout(() => {
+    console.log('watcher', timeInterval)
     users.forEach(user => availableClasses(user.id, user, true));
     watchAvailableClasses();
   }, timeInterval);
