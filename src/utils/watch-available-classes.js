@@ -5,14 +5,13 @@ const HttpError = require("../models/http-error");
 const HttpStatusCode = require("./http-status-code");
 
 const watchAvailableClasses = async () => {
-  console.log('watcher', new Date())
   const timeInterval =
     TIME_INTERVALS[Math.round(Math.random() * TIME_INTERVALS.length)];
   const users = await getUsers();
   setTimeout(() => {
     users.forEach(user => availableClasses(user.id, user, true));
     watchAvailableClasses();
-  }, 5000/* timeInterval */);
+  }, timeInterval);
 };
 
 const getUsers = async () => {

@@ -89,7 +89,6 @@ const availableClasses = async (
     }
 
     if (matchedClasses.length > 0 && calledByWatcher) {
-      console.log(7777)
       const notifiedClasses = await getNotifiedClasses(userId);
       const classesInfoToNotify = getClassesInfoForMessageSent(
         matchedClasses,
@@ -169,13 +168,6 @@ const getClassesForNotificationRecord = (classes, notifiedClasses) => {
 
 const getNotifiedClasses = async (userId) => {
   let notifiedClasses;
-  console.log(
-    "date notified classes",
-    new Date(
-      new Date().getTime() -
-        process.env.NOTIFIED_CLASSES_TIME_IN_MINUTES * 60000
-    )
-  );
   try {
     notifiedClasses = await NotifiedClass.find(
       {
