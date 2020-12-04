@@ -55,8 +55,6 @@ const availableClasses = async (
       ],
     }));
 
-    console.log('urls', urlsPerClub)
-
     const availableClassesPerClub = [];
     for (const urls of urlsPerClub) {
       const [today, tomorrow] = await Promise.all(
