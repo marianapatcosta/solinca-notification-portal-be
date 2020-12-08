@@ -11,7 +11,7 @@ const {
 const sendAvailableClassesEmail = require("./send-available-classes-email");
 const getUserById = require("./get-user");
 const solincaAuth = require("./solinca-auth");
-const findAvailableClassesToTrack = require("./available-selected-classes");
+const findAvailableClassesToWatch = require("./available-selected-classes");
 const sendAvailableClassesWhatsAppMessage = require("./send-whatsapp-message");
 const findOtherAvailableClasses = require("./other-available-classes");
 
@@ -34,12 +34,13 @@ const availableClasses = async (
       email,
       phoneNumber,
       selectedClubs,
-      classesToTrack,
+      classesToWatch,
       solincaAuthToken,
       notificationTypes,
+      isNotificationRepeatOn
     } = user;
 
-    if (!selectedClubs.length || !classesToTrack.length) {
+    if (!selectedClubs.length || !classesToWatch.length) {
       return {
         matchedClasses: [],
         otherClasses: [],
@@ -73,8 +74,8 @@ const availableClasses = async (
       };
       availableClassesPerClub.push(availableClasses);
     }
-    const matchedClasses = findAvailableClassesToTrack(
-      classesToTrack,
+    const matchedClasses = findAvailableClassesToWatch(
+      classesToWatch,
       availableClassesPerClub
     );
 
@@ -82,14 +83,14 @@ const availableClasses = async (
       return {
         matchedClasses,
         otherClasses: findOtherAvailableClasses(
-          classesToTrack,
+          classesToWatch,
           availableClassesPerClub
         ),
       };
     }
 
     if (matchedClasses.length > 0 && calledByWatcher) {
-      const notifiedClasses = await getNotifiedClasses(userId);
+      const notifiedClasses = isNotificationRepeatOn ? [] : await getNotifiedClasses(userId);
       const classesInfoToNotify = getClassesInfoForMessageSent(
         matchedClasses,
         notifiedClasses

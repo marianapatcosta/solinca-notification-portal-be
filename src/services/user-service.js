@@ -51,7 +51,7 @@ const signupService = async ({ username, email, password, solincaAuth }) => {
     password: hashedPassword,
     solincaAuth,
     selectedClubs: [],
-    classesToTrack: [],
+    classesToWatch: [],
   });
 
   try {

@@ -1,21 +1,25 @@
-const findAvailableClassesToTrack = (
-  classesToTrack,
+const findAvailableClassesToWatch = (
+  classesToWatch,
   availableClassesPerClub
 ) => {
-  const matchedClasses = availableClassesPerClub.map(({ club, today, tomorrow }) => ({
-    club,
-    today: today.filter(({ project_code }) =>
-      classesToTrack.includes(project_code)
-    ),
-    tomorrow: tomorrow.filter(({ project_code }) =>
-      classesToTrack.includes(project_code)
-    ),
-  }));
-  return areClassesToTrackAvailable(matchedClasses) ? matchedClasses : [];
+  const matchedClasses = availableClassesPerClub.map(
+    ({ club, today, tomorrow }) => ({
+      club,
+      today: today.filter(({ project_code }) =>
+        classesToWatch.includes(project_code)
+      ),
+      tomorrow: tomorrow.filter(({ project_code }) =>
+        classesToWatch.includes(project_code)
+      ),
+    })
+  );
+  return areClassesToWatchAvailable(matchedClasses) ? matchedClasses : [];
 };
 
-const areClassesToTrackAvailable = (matchedClasses) => {
-  return !matchedClasses.every(({today, tomorrow}) => !today.length && !tomorrow.length);
-}
+const areClassesToWatchAvailable = (matchedClasses) => {
+  return !matchedClasses.every(
+    ({ today, tomorrow }) => !today.length && !tomorrow.length
+  );
+};
 
-module.exports = findAvailableClassesToTrack;
+module.exports = findAvailableClassesToWatch;

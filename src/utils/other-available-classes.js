@@ -1,14 +1,14 @@
 const findOtherAvailableClasses = (
-  classesToTrack,
+  classesToWatch,
   availableClassesPerClub
 ) => {
   const otherAvailableClasses = availableClassesPerClub.map(({ club, today, tomorrow }) => ({
     club,
     today: today.filter(({ project_code }) =>
-      !classesToTrack.includes(project_code)
+      !classesToWatch.includes(project_code)
     ),
     tomorrow: tomorrow.filter(({ project_code }) =>
-      !classesToTrack.includes(project_code)
+      !classesToWatch.includes(project_code)
     ),
   }));
   return areOtherClassesAvailable(otherAvailableClasses) ? otherAvailableClasses : [];
