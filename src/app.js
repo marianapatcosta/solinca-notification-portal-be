@@ -6,16 +6,17 @@ const userRoutes = require("./routes/user-routes.js");
 const HttpError = require("./models/http-error");
 const HttpStatusCode = require("./utils/http-status-code");
 const watchAvailableClasses = require("./utils/watch-available-classes.js");
-const {
-  GENERAL_ERROR,
-  ROUTE_NOT_FOUND_ERROR,
-} = require("./utils/constants");
+const { GENERAL_ERROR, ROUTE_NOT_FOUND_ERROR } = require("./utils/constants");
+
 
 const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@devconnector.ihogm.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
 const DEFAULT_PORT = 8000;
 const port = +process.env.PORT || DEFAULT_PORT;
 const app = express();
+app.disable('x-powered-by');
+
+app.use(helmet());
 
 app.use(bodyParser.json());
 
@@ -30,9 +31,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/club", clubRoutes);
+app.use("/api/v1/club", clubRoutes);
 
-app.use("/api/user", userRoutes);
+app.use("/api/v1/user", userRoutes);
 
 app.use((req, res, next) => {
   const error = new HttpError(ROUTE_NOT_FOUND_ERROR, 404);
