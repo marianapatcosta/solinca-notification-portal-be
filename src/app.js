@@ -3,39 +3,14 @@ const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
 const swaggerUI = require("swagger-ui-express");
-const swaggerJsDoc = require("swagger-jsdoc");
 const YAML = require("yamljs");
+const swaggerDocument = YAML.load('./src/swagger.yaml');
 const clubRoutes = require("./routes/club-routes.js");
 const userRoutes = require("./routes/user-routes.js");
 const HttpError = require("./models/http-error");
 const HttpStatusCode = require("./utils/http-status-code");
 const watchAvailableClasses = require("./utils/watch-available-classes.js");
 const { GENERAL_ERROR, ROUTE_NOT_FOUND_ERROR } = require("./utils/constants");
-
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Solinca Notification API",
-      version: "1.0.0",
-      description:
-        "API to sent notification when favorite classes are available at Solinca's clubs",
-    },
-    servers: [
-      {
-        url: "http://localhost:8000",
-        description: "Development server",
-      },
-      {
-        url: "https://solinca-notif-portal-apis.herokuapp.com",
-        description: "Production server",
-      },
-    ],
-  },
-  apis: ["./src/routes/*.js"],
-};
-
-const swaggerSpecs = swaggerJsDoc(options); // swaggerJsDoc recognizes @swagger comments at routes
 
 const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@devconnector.ihogm.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 

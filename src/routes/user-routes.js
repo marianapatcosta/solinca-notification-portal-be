@@ -31,49 +31,6 @@ router.post(
   signup
 );
 
-/**
- * @swagger
- * /api/v1/user/signin:
- *   post:
- *     summary: User login
- *     description: This API authenticates the user according to the username and password
- *     requestBody:
- *       required: true
- *       description: login body
- *       content:
- *         application/json:
- *           schema:
- *               type: object
- *               properties:
- *                 username:
- *                   type: string
- *                   description: The username
- *                   example: janedoe
- *                 password:
- *                   type: string
- *                   description: The user's password.
- *                   example: admin1234
- *     responses:
- *       200:
- *         description: An object containing user information and auth token
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 username:
- *                   type: string
- *                   description: The username
- *                   example: janedoe
- *                 userId:
- *                   type: string
- *                   description: The user's ID
- *                   example: 5354bj646665
- *                 token:
- *                   type: string
- *                   description: The user's authorization token
- *                   example: ewrewte9tegfewytreyrurt98ryrutyiyrootp
- */
 router.post(
   "/signin",
   [check("username").not().isEmpty(), check("password").isLength({ min: 8 })],
