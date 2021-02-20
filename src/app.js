@@ -1,9 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const helmet = require('helmet');
+const helmet = require("helmet");
 const mongoose = require("mongoose");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
+const YAML = require("yamljs");
 const clubRoutes = require("./routes/club-routes.js");
 const userRoutes = require("./routes/user-routes.js");
 const HttpError = require("./models/http-error");
@@ -23,25 +24,25 @@ const options = {
     servers: [
       {
         url: "http://localhost:8000",
-        description: 'Development server',
+        description: "Development server",
       },
       {
         url: "https://solinca-notif-portal-apis.herokuapp.com",
-        description: 'Production server',
+        description: "Production server",
       },
     ],
   },
   apis: ["./src/routes/*.js"],
 };
 
-const swaggerSpecs = swaggerJsDoc(options);
+const swaggerSpecs = swaggerJsDoc(options); // swaggerJsDoc recognizes @swagger comments at routes
 
 const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@devconnector.ihogm.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
 const DEFAULT_PORT = 8000;
 const port = +process.env.PORT || DEFAULT_PORT;
 const app = express();
-app.disable('x-powered-by');
+app.disable("x-powered-by");
 
 app.use(helmet());
 
@@ -58,7 +59,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
+app.use("/api/v1/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use("/api/v1/club", clubRoutes);
 
