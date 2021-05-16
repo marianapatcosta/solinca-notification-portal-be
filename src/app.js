@@ -2,14 +2,16 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
+const cron = require("node-cron");
 const swaggerUI = require("swagger-ui-express");
 const YAML = require("yamljs");
-const swaggerDocument = YAML.load('./src/swagger.yaml');
+const swaggerDocument = YAML.load("./src/swagger.yaml");
 const clubRoutes = require("./routes/club-routes.js");
 const userRoutes = require("./routes/user-routes.js");
 const HttpError = require("./models/http-error");
 const HttpStatusCode = require("./utils/http-status-code");
 const watchAvailableClasses = require("./utils/watch-available-classes.js");
+const emptyNotifiedClasses = require("./utils/empty-notified-classes.js");
 const { GENERAL_ERROR, ROUTE_NOT_FOUND_ERROR } = require("./utils/constants");
 
 const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@devconnector.ihogm.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
@@ -55,6 +57,11 @@ app.use((error, req, res, next) => {
 });
 
 watchAvailableClasses();
+
+const emptyNotifiedClassesCollection = cron.schedule("0 12 * * *", () => {
+  emptyNotifiedClasses();
+});
+emptyNotifiedClassesCollection.start();
 
 mongoose
   .connect(url, { useUnifiedTopology: true, useNewUrlParser: true })

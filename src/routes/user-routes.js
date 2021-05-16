@@ -15,10 +15,6 @@ const router = Router();
 // implemented for a cron job to keep heroku's dyno awake
 router.get("/", (req, res, next) => res.send("Hello User!!"));
 
-/**
- * @swagger
- * /api/v1/
- */
 router.post(
   "/signup",
   [

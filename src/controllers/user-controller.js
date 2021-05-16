@@ -5,7 +5,7 @@ const {
   getUserDataService,
   updateUserDataService,
   resetPasswordService,
-  restorePasswordService
+  restorePasswordService,
 } = require("../services/user-service");
 const { INVALID_INPUTS_ERROR } = require("../utils/constants");
 const HttpStatusCode = require("../utils/http-status-code");
@@ -120,5 +120,5 @@ module.exports = {
   getUserData,
   updateUserData,
   resetPassword,
-  restorePassword
+  restorePassword,
 };
