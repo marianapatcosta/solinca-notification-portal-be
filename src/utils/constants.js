@@ -1,8 +1,12 @@
 const constants = {
   AVAILABLE_CLASSES_URL: (locationId, brand, startDate, endDate) =>
     `https://marqueoseutreino.solinca.pt/api/location/${locationId}/capacity?brand=${brand}&start=${startDate}&end=${endDate}&duration=60&booking_type=GROUP_CLASS`,
+  AVAILABLE_OPEN_AIR_CLASSES_URL: (locationId, brand, startDate, endDate) =>
+    `https://reservas.solinca-openair.pt/api/location/${locationId}/capacity?brand=${brand}&start=${startDate}&end=${endDate}&duration=60&booking_type=OUTDOOR`,
   AUTHENTICATION_URL:
     "https://marqueoseutreino.solinca.pt/api/user/authenticate",
+  AUTHENTICATION_OPEN_AIR_URL:
+    "https://reservas.solinca-openair.pt/api/user/authenticate",
   AUTHENTICATION_ERROR: "Invalid credentials. Authentication failed.",
   AUTHORIZATION_ERROR: "Authorization failed.",
   BCRYPT_SALT_ROUNDS: 12,
@@ -12,11 +16,13 @@ const constants = {
   GENERAL_ERROR: "An unknown error occurred.",
   GET_CLUBS_URL:
     "https://marqueoseutreino.solinca.pt/api/location?booking_type=GROUP_CLASS",
+  GET_OPEN_AIR_CLUBS_URL:
+    "https://reservas.solinca-openair.pt/api/location?booking_type=OUTDOOR",
   GET_CLUBS_ERROR: "Could not get available clubs.",
   GET_USER_DATA_ERROR: "Could not fetch user data.",
   INVALID_INPUTS_ERROR: "Invalid inputs. Please check your data.",
   NO_EMAIL_ERROR: "There is no user with this email.",
-  NO_PHONE_NUMBER_ERROR: "TTo subscribe WhatsApp notification, please provide a phone number first.",
+  NO_PHONE_NUMBER_ERROR: "To subscribe WhatsApp notification, please provide a phone number first.",
   NOTIFICATION_TYPES: ["E-mail", "WhatsApp"],
   RECORD_NOTIFICATION_ERROR: "Could not record notification.",
   RESET_PASSWORD_TOKEN_EXPIRED_ERROR: "Password reset link is invalid or has expired.",
