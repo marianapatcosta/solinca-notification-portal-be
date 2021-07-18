@@ -1,5 +1,4 @@
-const { availableClassesService } = require("../services/club-service");
-const { clubsService } = require("../services/club-service");
+const { clubsService, availableClassesService } = require("../services/club-service");
 
 const fetchAvailableClasses = async (req, res, next) => {
   let availableClasses;
