@@ -8,7 +8,7 @@ const { GET_CLUBS_ERROR,  GET_OPEN_AIR_CLUBS_URL } = require("../utils/constants
 
 const availableClassesService = async (userId) => {
   try {
-    const response = await availableClasses(userId);
+    const response = await availableClasses(userId, true);
     return response;
   } catch (error) {
     throw new HttpError(
