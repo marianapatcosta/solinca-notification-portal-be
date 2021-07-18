@@ -5,6 +5,7 @@ const logger = require("./logger");
 const HttpStatusCode = require("./http-status-code");
 const {
   AVAILABLE_CLASSES_URL,
+  AVAILABLE_OPEN_AIR_CLASSES_URL,
   CLASSES_GET_ERROR,
   NOTIFICATION_TYPES,
 } = require("./constants");
@@ -17,8 +18,9 @@ const findOtherAvailableClasses = require("./other-available-classes");
 
 const availableClasses = async (
   userId,
+  isOpenAir = false,
   userInfo = null,
-  calledByWatcher = false
+  calledByWatcher = false,
 ) => {
   const today = (new Date()).toISOString().split("T")[0];
   let tomorrow = new Date();
@@ -34,24 +36,28 @@ const availableClasses = async (
       email,
       phoneNumber,
       selectedClubs,
+      selectedOpenAirClubs,
       classesToWatch,
       solincaAuthToken,
       notificationTypes,
       isNotificationRepeatOn
     } = user;
 
-    if (!selectedClubs.length || !classesToWatch.length) {
+    const clubsToCheck = isOpenAir ? selectedOpenAirClubs : selectedClubs;
+    const classesUrl = isOpenAir ?  AVAILABLE_OPEN_AIR_CLASSES_URL :  AVAILABLE_CLASSES_URL
+    
+    if (!clubsToCheck.length || !classesToWatch.length) {
       return {
         matchedClasses: [],
         otherClasses: [],
       };
     }
 
-    const urlsPerClub = selectedClubs.map(({ id, brand, name }) => ({
+    const urlsPerClub = clubsToCheck.map(({ id, brand, name }) => ({
       club: name,
       urls: [
-        AVAILABLE_CLASSES_URL(id, brand, today, today),
-        AVAILABLE_CLASSES_URL(id, brand, tomorrow, tomorrow),
+        classesUrl(id, brand, today, today),
+        classesUrl(id, brand, tomorrow, tomorrow),
       ],
     }));
 
