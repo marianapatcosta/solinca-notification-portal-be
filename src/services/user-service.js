@@ -51,6 +51,7 @@ const signupService = async ({ username, email, password, solincaAuth }) => {
     password: hashedPassword,
     solincaAuth,
     selectedClubs: [],
+    selectedOpenAirClubs: [],
     classesToWatch: [],
   });
 
@@ -143,7 +144,7 @@ const updateUserDataService = async (userId, updatedData) => {
 
     if (
       !userToUpdate.phoneNumber &&
-      userToUpdate.notificationTypes.includes(NOTIFICATION_TYPES[1])
+      updatedData.notificationTypes.includes(NOTIFICATION_TYPES[1])
     ) {
       throw new Error(NO_PHONE_NUMBER_ERROR);
     }
