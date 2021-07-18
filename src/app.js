@@ -7,6 +7,7 @@ const swaggerUI = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerDocument = YAML.load("./src/swagger.yaml");
 const clubRoutes = require("./routes/club-routes.js");
+const openAirClubRoutes = require("./routes/open-air-club-routes.js");
 const userRoutes = require("./routes/user-routes.js");
 const HttpError = require("./models/http-error");
 const HttpStatusCode = require("./utils/http-status-code");
@@ -15,7 +16,6 @@ const emptyNotifiedClasses = require("./utils/empty-notified-classes.js");
 const { GENERAL_ERROR, ROUTE_NOT_FOUND_ERROR } = require("./utils/constants");
 
 const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@devconnector.ihogm.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
-
 const DEFAULT_PORT = 8000;
 const port = +process.env.PORT || DEFAULT_PORT;
 const app = express();
@@ -39,6 +39,8 @@ app.use((req, res, next) => {
 app.use("/api/v1/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use("/api/v1/club", clubRoutes);
+
+app.use("/api/v1/club", openAirClubRoutes);
 
 app.use("/api/v1/user", userRoutes);
 
