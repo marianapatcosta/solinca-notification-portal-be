@@ -45,7 +45,7 @@ const availableClasses = async (
 
     const clubsToCheck = isOpenAir ? selectedOpenAirClubs : selectedClubs;
     const classesUrl = isOpenAir ?  AVAILABLE_OPEN_AIR_CLASSES_URL :  AVAILABLE_CLASSES_URL
-    
+
     if (!clubsToCheck.length || !classesToWatch.length) {
       return {
         matchedClasses: [],
@@ -99,14 +99,16 @@ const availableClasses = async (
       const notifiedClasses = isNotificationRepeatOn ? [] : await getNotifiedClasses(userId);
       const classesInfoToNotify = getClassesInfoForMessageSent(
         matchedClasses,
-        notifiedClasses
+        notifiedClasses,
+        isOpenAir
       );
       const classesInfoToNotificationRecord = getClassesForNotificationRecord(
         matchedClasses,
-        notifiedClasses
+        notifiedClasses,
+        isOpenAir
       );
 
-      if (!areClassesToNotify(classesInfoToNotify)) return;
+      if (!areThereClassesToNotify(classesInfoToNotify)) return;
 
       if (notificationTypes.includes(NOTIFICATION_TYPES[0])) {
         sendAvailableClassesEmail(
@@ -141,33 +143,34 @@ const availableClasses = async (
   }
 };
 
-const getClassesInfoForMessageSent = (classes, notifiedClasses) => {
+const getClassesInfoForMessageSent = (classes, notifiedClasses, isOpenAir = false) => {
   return classes.map(({ club, today, tomorrow }) => {
     const classesDetails = [
       ...today
-        .filter(({ description }) => !notifiedClasses.includes(description))
-        .map(({ description }) => `Hoje ${description.split(/- (.+)/)[1]}`),
+        .filter(({ description }) => !notifiedClasses.includes(isOpenAir ? `Open Air - ${description}` : description))
+        .map(({ description }) => `Hoje ${description.split(/- (.+)/)[1] || description}`),
       ...tomorrow
-        .filter(({ description }) => !notifiedClasses.includes(description))
-        .map(({ description }) => `Amanhã ${description.split(/- (.+)/)[1]}`),
+        .filter(({ description }) => !notifiedClasses.includes(isOpenAir ? `Open Air - ${description}` : description))
+        .map(({ description }) => `Amanhã ${description.split(/- (.+)/)[1] || description}`),
     ];
     return {
-      club,
+      club: isOpenAir ? `Open Air - ${club}` : club,
       classesDetails,
     };
   });
 };
 
-const getClassesForNotificationRecord = (classes, notifiedClasses) => {
+const getClassesForNotificationRecord = (classes, notifiedClasses, isOpenAir = false) => {
   return classes
     .map(({ today, tomorrow }) => {
       return [
         ...today
           .filter(({ description }) => !notifiedClasses.includes(description))
-          .map(({ description }) => description),
+          .map(({ description }) => isOpenAir ? `Open Air - ${description}` : description),
         ...tomorrow
           .filter(({ description }) => !notifiedClasses.includes(description))
-          .map(({ description }) => description),
+          .map(({ description }) => isOpenAir ? `Open Air - ${description}` : description),
+
       ];
     })
     .flat();
@@ -196,7 +199,7 @@ const getNotifiedClasses = async (userId) => {
   }
 };
 
-const areClassesToNotify = (classes) =>
+const areThereClassesToNotify = (classes) =>
   classes.some(({ classesDetails }) => classesDetails.length > 0);
 
 module.exports = availableClasses;
