@@ -6,10 +6,15 @@ const {
   SEND_WHATSAPP_MESSAGE_SUCCESS,
 } = require("./constants");
 
-const sendAvailableClassesWhatsAppMessage = async (phoneNumber, classes) => {
+const sendAvailableClassesWhatsAppMessage = async (
+  userId,
+  phoneNumber, 
+  classesInfoToNotify,
+  classesInfoToNotificationRecord
+) => {
   try {
     const client = twilio();
-    const textMessage = getWhatsAppMessageText(classes);
+    const textMessage = getWhatsAppMessageText(classesInfoToNotify);
     const response = await client.messages.create({
       from: `whatsapp:${process.env.SENDER_PHONE_NUMBER}`,
       to: `whatsapp:${phoneNumber}`,

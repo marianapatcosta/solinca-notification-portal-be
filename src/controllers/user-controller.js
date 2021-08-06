@@ -9,6 +9,7 @@ const {
 } = require("../services/user-service");
 const { INVALID_INPUTS_ERROR } = require("../utils/constants");
 const HttpStatusCode = require("../utils/http-status-code");
+const HttpError = require("../models/http-error");
 
 const signup = async (req, res, next) => {
   const errors = validationResult(req);
@@ -60,7 +61,6 @@ const getUserData = async (req, res, next) => {
 
 const updateUserData = async (req, res, next) => {
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     return next(
       new HttpError(INVALID_INPUTS_ERROR, HttpStatusCode.UNPROCESSABLE_ENTITY)

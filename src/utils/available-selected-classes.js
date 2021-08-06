@@ -13,7 +13,9 @@ const findAvailableClassesToWatch = (
       ),
     })
   );
-  return areClassesToWatchAvailable(matchedClasses) ? matchedClasses : [];
+
+  return areClassesToWatchAvailable(matchedClasses) ? 
+    matchedClasses.filter(({ today, tomorrow }) => !!today.length || !!tomorrow.length) : [];
 };
 
 const areClassesToWatchAvailable = (matchedClasses) => {

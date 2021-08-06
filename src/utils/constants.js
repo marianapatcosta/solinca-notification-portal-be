@@ -32,6 +32,10 @@ const constants = {
   SEND_EMAIL_ERROR: (email, error) =>
     `The email to ${email} was not sent - ${error}.`,
   SEND_EMAIL_SUCCESS: (email) => `An email was sent to ${email}.`,
+  SEND_PUSH_NOTIFICATION_ERROR: (expoPushToken, error) =>
+    `The push notification to ${expoPushToken} was not sent - ${error}.`,
+  SEND_PUSH_NOTIFICATION_SUCCESS: (expoPushToken) =>
+    `A push notification was sent to ${expoPushToken}.`,
   SEND_WHATSAPP_MESSAGE_ERROR: (phoneNumber, error) =>
     `The WhatsApp message to ${phoneNumber} was not sent - ${error}.`,
   SEND_WHATSAPP_MESSAGE_SUCCESS: (phoneNumber, sid) =>

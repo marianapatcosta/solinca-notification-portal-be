@@ -8,6 +8,7 @@ const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, minlength: 6 },
   solincaAuth: { type: String, required: true },
+  expoPushToken: { type: String },
   phoneNumber: { type: String },
   selectedClubs: [{ id: Number, brand: String, name: String }],
   selectedOpenAirClubs: [{ id: String, brand: String, name: String }],

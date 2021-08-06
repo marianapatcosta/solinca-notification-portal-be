@@ -10,6 +10,7 @@ const {
   NOTIFICATION_TYPES,
 } = require("./constants");
 const sendAvailableClassesEmail = require("./send-available-classes-email");
+const sendAvailableClassesPushNotification = require("./send-push-notification");
 const getUserById = require("./get-user");
 const solincaAuth = require("./solinca-auth");
 const findAvailableClassesToWatch = require("./available-selected-classes");
@@ -34,6 +35,7 @@ const availableClasses = async (
     const {
       username,
       email,
+      expoPushToken,
       phoneNumber,
       selectedClubs,
       selectedOpenAirClubs,
@@ -46,7 +48,7 @@ const availableClasses = async (
     const clubsToCheck = isOpenAir ? selectedOpenAirClubs : selectedClubs;
     const classesUrl = isOpenAir ?  AVAILABLE_OPEN_AIR_CLASSES_URL :  AVAILABLE_CLASSES_URL
 
-    if (!clubsToCheck.length || !classesToWatch.length) {
+    if (!clubsToCheck.length || (!classesToWatch.length && calledByWatcher)) {
       return {
         matchedClasses: [],
         otherClasses: [],
@@ -110,6 +112,15 @@ const availableClasses = async (
 
       if (!areThereClassesToNotify(classesInfoToNotify)) return;
 
+      if (expoPushToken) {
+        sendAvailableClassesPushNotification(
+          userId,
+          expoPushToken,
+          classesInfoToNotify,
+          classesInfoToNotificationRecord
+        );
+      }
+
       if (notificationTypes.includes(NOTIFICATION_TYPES[0])) {
         sendAvailableClassesEmail(
           userId,
@@ -122,6 +133,7 @@ const availableClasses = async (
 
       if (notificationTypes.includes(NOTIFICATION_TYPES[1])) {
         sendAvailableClassesWhatsAppMessage(
+          userId,
           phoneNumber,
           classesInfoToNotify,
           classesInfoToNotificationRecord

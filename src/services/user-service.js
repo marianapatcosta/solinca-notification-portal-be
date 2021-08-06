@@ -23,7 +23,7 @@ const {
   UPDATE_USER_PREFERENCES_ERROR,
 } = require("../utils/constants");
 
-const signupService = async ({ username, email, password, solincaAuth }) => {
+const signupService = async ({ username, email, password, solincaAuth, expoPushToken }) => {
   let existingUser;
   try {
     existingUser = await User.findOne({ $or: [{ email }, { username }] });
@@ -50,6 +50,7 @@ const signupService = async ({ username, email, password, solincaAuth }) => {
     email,
     password: hashedPassword,
     solincaAuth,
+    expoPushToken,
     selectedClubs: [],
     selectedOpenAirClubs: [],
     classesToWatch: [],
@@ -72,7 +73,7 @@ const signupService = async ({ username, email, password, solincaAuth }) => {
     throw new HttpError(SIGNUP_ERROR, HttpStatusCode.INTERNAL_SERVER_ERROR);
   }
 
-  return { userId: newUser.id, username: newUser.username, token };
+  return { userId: newUser.id, username: newUser.username, email: newUser.email, token };
 };
 
 const signinService = async ({ username, email, password }) => {
@@ -112,6 +113,7 @@ const signinService = async ({ username, email, password }) => {
   return {
     userId: existingUser.id,
     username: existingUser.username,
+    email: existingUser.email,
     token,
   };
 };
@@ -121,7 +123,7 @@ const getUserDataService = async (userId) => {
   try {
     user = await getUserById(
       userId,
-      "-password -solincaAuth -solincaAuthToken",
+      "-password -solincaAuth -solincaAuthToken -expoPushToken",
       GET_USER_DATA_ERROR
     );
   } catch (error) {
@@ -135,6 +137,7 @@ const getUserDataService = async (userId) => {
 };
 
 const updateUserDataService = async (userId, updatedData) => {
+
   try {
     const userToUpdate = await getUserById(
       userId,
@@ -144,7 +147,7 @@ const updateUserDataService = async (userId, updatedData) => {
 
     if (
       !userToUpdate.phoneNumber &&
-      updatedData.notificationTypes.includes(NOTIFICATION_TYPES[1])
+      updatedData.notificationTypes?.includes(NOTIFICATION_TYPES[1])
     ) {
       throw new Error(NO_PHONE_NUMBER_ERROR);
     }
