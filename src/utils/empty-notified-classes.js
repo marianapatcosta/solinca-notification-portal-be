@@ -1,4 +1,5 @@
 const NotifiedClass = require("../models/notified-class");
+const HttpError = require("../models/http-error");
 
 const emptyNotifiedClasses = async () => {
   try {

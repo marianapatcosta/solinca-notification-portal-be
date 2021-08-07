@@ -20,24 +20,44 @@ const availableClassesService = async (userId) => {
 
 const clubsService = async (userId) => {
   try {
-    const user = await getUserById(userId, "solincaAuthToken", GET_CLUBS_ERROR);
-    const response = await axios.get(GET_CLUBS_URL, {
+    const axiosInstance = axios.create()
+    axiosInstance.interceptors.response.use(
+      response => response.data,
+      (error) => handleRequestFailure(error, axiosInstance, userId)
+    );
+
+    const user = await getUserById(userId, "", GET_CLUBS_ERROR);
+    return await axiosInstance({
+      url: GET_CLUBS_URL, 
       headers: {
         Authorization: `Bearer ${user.solincaAuthToken}`,
-      },
+      }
     });
-    return response.data;
   } catch (error) {
     logger.error(`Failed to get clubs - ${error}`);
-    if (error.response.status === 401) {
-      await solincaAuth(userId);
-      await clubsService(userId);
-    }
     throw new HttpError(
       error.message || GET_CLUBS_ERROR,
       error.code || 500
     );
   }
 };
+
+const handleRequestFailure = async (error, axiosInstance, userId) => {
+  const originalRequest = error.config;
+  if (error.response.status === 401 && !originalRequest._retry ) {
+    logger.error(`Failed to get clubs - ${error}`);
+    originalRequest._retry = true;
+    const updatedToken = await solincaAuth(userId);      
+    return axiosInstance({
+      ...originalRequest,
+      headers: {
+        ...originalRequest.headers, 
+        Authorization: `Bearer ${updatedToken}`
+      }
+    })
+  }
+
+  return Promise.reject(error);
+}
 
 module.exports = { availableClassesService, clubsService };

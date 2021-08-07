@@ -20,24 +20,44 @@ const availableClassesService = async (userId) => {
 
 const clubsService = async (userId) => {
   try {
-    const user = await getUserById(userId, "solincaAuthToken", GET_CLUBS_ERROR);
-    const response = await axios.get(GET_OPEN_AIR_CLUBS_URL, {
-      headers: {
-        Authorization: `Bearer ${user.solincaAuthToken}`,
-      },
+    const axiosInstance = axios.create()
+    axiosInstance.interceptors.response.use(
+      response => response.data,
+      (error) => handleRequestFailure(error, axiosInstance, userId)
+    );
+
+    const user = await getUserById(userId, "", GET_CLUBS_ERROR);
+    return await axiosInstance({
+      url: GET_OPEN_AIR_CLUBS_URL, 
+      headers: {...axiosInstance.defaults.headers,
+        Authorization: `Bearer ${user.solincaOpenAirAuthToken}`,
+      }
     });
-    return response.data;
   } catch (error) {
     logger.error(`Failed to get open air clubs - ${error}`);
-    if (error.response.status === 401) {
-      await solincaOpenAirAuth(userId);
-      await clubsService(userId);
-    }
     throw new HttpError(
       error.message || GET_CLUBS_ERROR,
       error.code || 500
     );
   }
 };
+
+const handleRequestFailure = async (error, axiosInstance, userId) => {
+  const originalRequest = error.config;
+  if (error.response.status === 401 && !originalRequest._retry) {
+    logger.error(`Failed to get open air clubs - ${error}`);
+    originalRequest._retry = true;
+    const updatedToken = await solincaOpenAirAuth(userId);
+    return axiosInstance({
+      ...originalRequest,
+      headers: {
+        ...originalRequest.headers, 
+        Authorization: `Bearer ${updatedToken}`
+      }
+    })
+  }
+
+  return Promise.reject(error);
+}
 
 module.exports = { availableClassesService, clubsService };

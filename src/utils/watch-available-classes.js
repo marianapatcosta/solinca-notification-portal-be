@@ -10,8 +10,8 @@ const watchAvailableClasses = async () => {
   const users = await getUsers();
   const openAirUsers = await getOpenAirUsers();
   setTimeout(() => {
-    !!users.length && users.forEach(user => availableClasses(user.id, false, user, true));
-    !!openAirUsers.length && openAirUsers.forEach(user => availableClasses(user.id, true, user, true));
+    !!users.length && users.forEach(user => availableClasses(user.id, false, user));
+    !!openAirUsers.length && openAirUsers.forEach(user => availableClasses(user.id, true, user));
     watchAvailableClasses();
   }, timeInterval);
 };

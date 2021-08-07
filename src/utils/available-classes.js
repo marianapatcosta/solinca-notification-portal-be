@@ -16,22 +16,22 @@ const solincaAuth = require("./solinca-auth");
 const findAvailableClassesToWatch = require("./available-selected-classes");
 const sendAvailableClassesWhatsAppMessage = require("./send-whatsapp-message");
 const findOtherAvailableClasses = require("./other-available-classes");
+const solincaOpenAirAuth = require("./solinca-open-air-auth");
 
 const availableClasses = async (
   userId,
   isOpenAir = false,
   userInfo = null,
-  calledByWatcher = false,
 ) => {
+  const calledByWatcher = !!userInfo
   const today = (new Date()).toISOString().split("T")[0];
   let tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   tomorrow = tomorrow.toISOString().split("T")[0];
-
   try {
     const user =
-      userInfo ||
-      (await getUserById(userId, "-password -solincaAuth", CLASSES_GET_ERROR));
+    userInfo ||
+    (await getUserById(userId, "-password -solincaAuth", CLASSES_GET_ERROR));
     const {
       username,
       email,
@@ -41,9 +41,17 @@ const availableClasses = async (
       selectedOpenAirClubs,
       classesToWatch,
       solincaAuthToken,
+      solincaOpenAirAuthToken,
       notificationTypes,
       isNotificationRepeatOn
     } = user;
+
+    const authToken = isOpenAir ? solincaOpenAirAuthToken : solincaAuthToken;
+    const axiosInstance = axios.create()
+    axiosInstance.interceptors.response.use(
+      response => response.data?.slots,
+      (error) => handleRequestFailure(error, axiosInstance, userId, isOpenAir)
+    );
 
     const clubsToCheck = isOpenAir ? selectedOpenAirClubs : selectedClubs;
     const classesUrl = isOpenAir ?  AVAILABLE_OPEN_AIR_CLASSES_URL :  AVAILABLE_CLASSES_URL
@@ -67,12 +75,12 @@ const availableClasses = async (
     for (const urls of urlsPerClub) {
       const [today, tomorrow] = await Promise.all(
         urls.urls.map(async (url) => {
-          const response = await axios.get(url, {
-            headers: {
-              Authorization: `Bearer ${solincaAuthToken}`,
-            },
+         return await axiosInstance({
+           url, 
+           headers: {
+              Authorization: `Bearer ${authToken}`,
+            }
           });
-          return response.data.slots;
         })
       );
       const availableClasses = {
@@ -144,16 +152,31 @@ const availableClasses = async (
     }
   } catch (error) {
     logger.error(`Failed to fetch available classes - ${error}`);
-    if (error.response.status === 401) {
-      await solincaAuth(userId);
-      await availableClasses(userId);
-    }
     throw new HttpError(
       error.message || CONNECTION_ERROR("solinca"),
       error.status || HttpStatusCode.INTERNAL_SERVER_ERROR
     );
   }
 };
+
+const handleRequestFailure = async (error, axiosInstance, userId, isOpenAir) => {
+  const authenticate = isOpenAir ? solincaOpenAirAuth : solincaAuth;
+  const originalRequest = error.config;
+  if (error.response.status === 401 && !originalRequest._retry) {
+    logger.error(`Failed to fetch available classes - ${error}`);
+    originalRequest._retry = true;
+    const updatedToken = await authenticate(userId);
+    return axiosInstance({
+      ...originalRequest,
+      headers: {
+        ...originalRequest.headers, 
+        Authorization: `Bearer ${updatedToken}`
+      }
+    })
+  }
+
+  return Promise.reject(error);
+}
 
 const getClassesInfoForMessageSent = (classes, notifiedClasses, isOpenAir = false) => {
   return classes.map(({ club, today, tomorrow }) => {

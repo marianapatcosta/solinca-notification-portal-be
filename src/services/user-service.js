@@ -123,7 +123,7 @@ const getUserDataService = async (userId) => {
   try {
     user = await getUserById(
       userId,
-      "-password -solincaAuth -solincaAuthToken -expoPushToken",
+      "-password -solincaAuth -solincaAuthToken -solincaOpenAirAuthToken -expoPushToken",
       GET_USER_DATA_ERROR
     );
   } catch (error) {
@@ -141,7 +141,7 @@ const updateUserDataService = async (userId, updatedData) => {
   try {
     const userToUpdate = await getUserById(
       userId,
-      "-solincaAuth -solincaAuthToken",
+      "-solincaAuth -solincaAuthToken -solincaOpenAirAuthToken",
       UPDATE_USER_PREFERENCES_ERROR
     );
 

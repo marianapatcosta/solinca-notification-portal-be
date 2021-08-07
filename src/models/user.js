@@ -14,6 +14,7 @@ const userSchema = new Schema({
   selectedOpenAirClubs: [{ id: String, brand: String, name: String }],
   classesToWatch: [{ type: String }],
   solincaAuthToken: { type: String },
+  solincaOpenAirAuthToken: { type: String },
   isWatcherOn: { type: Boolean, default: false },
   isOpenAirWatcherOn: { type: Boolean, default: false },
   isNotificationRepeatOn: { type: Boolean, default: false },

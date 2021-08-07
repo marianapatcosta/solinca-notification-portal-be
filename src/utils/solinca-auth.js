@@ -7,14 +7,15 @@ const getUserById = require("./get-user");
 
 const solincaAuth = async (userId) => {
   try {
-    const updatedUser = await getUserById(userId, "solincaAuth solincaAuthToken", CONNECTION_ERROR("solinca"));
+    const user = await getUserById(userId, "solincaAuth", CONNECTION_ERROR("solinca"));
     const response = await axios.post(AUTHENTICATION_URL, null, {
       headers: {
-        Authorization: `Basic ${updatedUser.solincaAuth}`,
+        Authorization: `Basic ${user.solincaAuth}`,
       },
     });
-    updatedUser.solincaAuthToken = response.data.token;
-    await updatedUser.save();
+    user.solincaAuthToken = response.data.token;
+    await user.save();
+    return response.data.token;
   } catch (error) {
     logger.error(SOLINCA_AUTH_ERROR(error));
     throw new HttpError(

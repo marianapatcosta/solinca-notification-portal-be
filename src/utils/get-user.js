@@ -1,5 +1,6 @@
 
 const User = require("../models/user");
+const HttpError = require("../models/http-error");
 const HttpStatusCode = require("./http-status-code");
 
 const getUserById = async (userId, paramsFilter, errorInfo) => {
