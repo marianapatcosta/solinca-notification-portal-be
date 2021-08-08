@@ -26,7 +26,7 @@ const clubsService = async (userId) => {
       (error) => handleRequestFailure(error, axiosInstance, userId)
     );
 
-    const user = await getUserById(userId, "", GET_CLUBS_ERROR);
+    const user = await getUserById(userId, "solincaAuthToken", GET_CLUBS_ERROR);
     return await axiosInstance({
       url: GET_OPEN_AIR_CLUBS_URL, 
       headers: {...axiosInstance.defaults.headers,
